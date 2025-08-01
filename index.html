@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualizador de Imagens Base64</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #ffffff;
+            margin: 0;
+            padding: 30px 30px 20px 30px;
+            border-bottom: 1px solid #eee;
+            background-color: cornflowerblue;
+        }
+        
+        .main-content {
+            display: flex;
+            min-height: 600px;
+        }
+        
+        .left-column {
+            flex: 0 0 400px;
+            padding: 30px;
+            border-right: 1px solid #eee;
+            background: #fafafa;
+        }
+        
+        .right-column {
+            flex: 1;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .input-section {
+            margin-bottom: 30px;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
+        
+        input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            border: 2px dashed #ddd;
+            border-radius: 5px;
+            background: #fafafa;
+        }
+        
+        input[type="file"]:hover {
+            border-color: #007bff;
+        }
+        
+        textarea {
+            width: 100%;
+            height: 120px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 12px;
+            resize: vertical;
+        }
+        
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: white;
+        }
+        
+        .buttons {
+            text-align: left;
+            margin: 20px 0;
+        }
+        
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 0 10px 0 0;
+        }
+        
+        button:hover {
+            background: #0056b3;
+        }
+        
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .output-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .output-section h3 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        .image-container {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            background: white;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 300px;
+        }
+        
+        .image-container img {
+            max-width: 100%;
+            max-height: 100%;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .placeholder {
+            color: #999;
+            font-size: 18px;
+        }
+        
+        .error {
+            color: #dc3545;
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        
+        .info {
+            margin-top: 15px;
+            padding: 10px;
+            background: #e9ecef;
+            border-radius: 5px;
+            font-size: 14px;
+            text-align: left;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .left-column {
+                flex: none;
+                border-right: none;
+                border-bottom: 1px solid #eee;
+            }
+            
+            body {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Visualizador de Imagens Base64</h1>
+        
+        <div class="main-content">
+            <div class="left-column">
+                <div class="input-section">
+                    <div class="input-group">
+                        <label for="fileInput">Carregar arquivo de imagem:</label>
+                        <input type="file" id="fileInput" accept="image/*">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="base64Input">Ou cole o código base64:</label>
+                        <textarea id="base64Input" placeholder="Cole aqui o código base64 da imagem..."></textarea>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="prefixSelect">Prefixo da imagem:</label>
+                        <select id="prefixSelect">
+                            <option value="">None</option>
+                            <option value="data:image/png;base64,">data:image/png;base64,</option>
+                            <option value="data:image/jpeg;base64,">data:image/jpeg;base64,</option>
+                            <option value="data:image/jpg;base64,">data:image/jpg;base64,</option>
+                            <option value="data:image/gif;base64,">data:image/gif;base64,</option>
+                            <option value="data:image/webp;base64,">data:image/webp;base64,</option>
+                            <option value="data:image/svg+xml;base64,">data:image/svg+xml;base64,</option>
+                            <option value="data:image/bmp;base64,">data:image/bmp;base64,</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="buttons">
+                    <button id="processBtn">Processar Imagem</button>
+                    <button id="clearBtn">Limpar</button>
+                </div>
+                
+                <div id="errorMsg" class="error" style="display: none;"></div>
+            </div>
+            
+            <div class="right-column">
+                <div class="output-section">
+                    <h3>Visualização:</h3>
+                    <div class="image-container" id="imageContainer">
+                        <div class="placeholder">Nenhuma imagem carregada</div>
+                    </div>
+                    <div id="imageInfo" class="info" style="display: none;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const base64Input = document.getElementById('base64Input');
+        const prefixSelect = document.getElementById('prefixSelect');
+        const processBtn = document.getElementById('processBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const imageContainer = document.getElementById('imageContainer');
+        const imageInfo = document.getElementById('imageInfo');
+        const errorMsg = document.getElementById('errorMsg');
+
+        fileInput.addEventListener('change', handleFileSelect);
+        processBtn.addEventListener('click', processImage);
+        clearBtn.addEventListener('click', clearAll);
+
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            if (!file.type.startsWith('image/')) {
+                showError('Por favor, selecione apenas arquivos de imagem.');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const base64 = e.target.result.split(',')[1];
+                base64Input.value = base64;
+                
+                const mimeType = file.type;
+                const prefix = `data:${mimeType};base64,`;
+                
+                for (let option of prefixSelect.options) {
+                    if (option.value === prefix) {
+                        prefixSelect.value = prefix;
+                        break;
+                    }
+                }
+                
+                processImage();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function processImage() {
+            hideError();
+            
+            const base64Data = base64Input.value.trim();
+            if (!base64Data) {
+                showError('Por favor, carregue um arquivo ou cole o código base64.');
+                return;
+            }
+
+            try {
+                const prefix = prefixSelect.value;
+                const fullBase64 = prefix + base64Data;
+                
+                const img = new Image();
+                img.onload = function() {
+                    displayImage(img, fullBase64, base64Data.length);
+                };
+                img.onerror = function() {
+                    showError('Erro ao carregar a imagem. Verifique se o código base64 está correto.');
+                };
+                img.src = fullBase64;
+                
+            } catch (error) {
+                showError('Erro ao processar a imagem: ' + error.message);
+            }
+        }
+
+        function displayImage(img, fullBase64, base64Length) {
+            imageContainer.innerHTML = '';
+            imageContainer.appendChild(img);
+            
+            const sizeKB = Math.round((base64Length * 3 / 4) / 1024);
+            const dimensions = `${img.naturalWidth} x ${img.naturalHeight}`;
+            
+            imageInfo.innerHTML = `
+                <strong>Dimensões:</strong> ${dimensions} pixels<br>
+                <strong>Tamanho estimado:</strong> ${sizeKB} KB<br>
+                <strong>Formato:</strong> ${getImageFormat(fullBase64)}
+            `;
+            imageInfo.style.display = 'block';
+        }
+
+        function getImageFormat(base64) {
+            if (base64.startsWith('data:image/png')) return 'PNG';
+            if (base64.startsWith('data:image/jpeg') || base64.startsWith('data:image/jpg')) return 'JPEG';
+            if (base64.startsWith('data:image/gif')) return 'GIF';
+            if (base64.startsWith('data:image/webp')) return 'WebP';
+            if (base64.startsWith('data:image/svg')) return 'SVG';
+            if (base64.startsWith('data:image/bmp')) return 'BMP';
+            return 'Desconhecido';
+        }
+
+        function clearAll() {
+            fileInput.value = '';
+            base64Input.value = '';
+            prefixSelect.value = '';
+            imageContainer.innerHTML = '<div class="placeholder">Nenhuma imagem carregada</div>';
+            imageInfo.style.display = 'none';
+            hideError();
+        }
+
+        function showError(message) {
+            errorMsg.textContent = message;
+            errorMsg.style.display = 'block';
+        }
+
+        function hideError() {
+            errorMsg.style.display = 'none';
+        }
+    </script>
+</body>
+</html>
