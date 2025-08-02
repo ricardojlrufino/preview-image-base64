@@ -197,7 +197,7 @@
             <div class="left-column">
                 <div class="input-section">
                     <div class="input-group">
-                        <label for="fileInput">Carregar arquivo de imagem:</label>
+                        <label for="fileInput">Carregar de arquivo:</label>
                         <input type="file" id="fileInput">
                     </div>
                     
@@ -209,14 +209,14 @@
                     <div class="input-group">
                         <label for="prefixSelect">Prefixo da imagem:</label>
                         <select id="prefixSelect">
-                            <option value="">None</option>
-                            <option value="data:image/png;base64,">data:image/png;base64,</option>
+                            <option value="data:image/png;base64," selected>data:image/png;base64,</option>
                             <option value="data:image/jpeg;base64,">data:image/jpeg;base64,</option>
                             <option value="data:image/jpg;base64,">data:image/jpg;base64,</option>
                             <option value="data:image/gif;base64,">data:image/gif;base64,</option>
                             <option value="data:image/webp;base64,">data:image/webp;base64,</option>
                             <option value="data:image/svg+xml;base64,">data:image/svg+xml;base64,</option>
                             <option value="data:image/bmp;base64,">data:image/bmp;base64,</option>
+                            <option value="">None</option>
                         </select>
                     </div>
                 </div>
@@ -259,29 +259,14 @@
             const file = event.target.files[0];
             if (!file) return;
 
-            if (!file.type.startsWith('image/')) {
-                showError('Por favor, selecione apenas arquivos de imagem.');
-                return;
-            }
 
             const reader = new FileReader();
             reader.onload = function(e) {
-                const base64 = e.target.result.split(',')[1];
+                const base64 = e.target.result;
                 base64Input.value = base64;
-                
-                const mimeType = file.type;
-                const prefix = `data:${mimeType};base64,`;
-                
-                for (let option of prefixSelect.options) {
-                    if (option.value === prefix) {
-                        prefixSelect.value = prefix;
-                        break;
-                    }
-                }
-                
                 processImage();
             };
-            reader.readAsDataURL(file);
+            reader.readAsText(file);
         }
 
         function processImage() {
